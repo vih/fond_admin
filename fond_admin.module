@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Fond Admin feature.
+ */
+
+include_once 'fond_admin.features.inc';

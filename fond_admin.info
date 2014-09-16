@@ -1,0 +1,13 @@
+name = Fond Admin
+description = Admin stuff for the fund
+core = 7.x
+package = VIH Fond
+version = 7.x-1.0
+project = fond_admin
+dependencies[] = commerce_order
+dependencies[] = views
+dependencies[] = views_data_export
+features[ctools][] = views:views_default:3.0
+features[features_api][] = api:2
+features[views_view][] = contributors
+features_exclude[dependencies][ctools] = ctools
