@@ -65,20 +65,18 @@ function fond_admin_views_default_views() {
   $handler->display->display_options['relationships']['commerce_customer_billing_profile_id']['id'] = 'commerce_customer_billing_profile_id';
   $handler->display->display_options['relationships']['commerce_customer_billing_profile_id']['table'] = 'field_data_commerce_customer_billing';
   $handler->display->display_options['relationships']['commerce_customer_billing_profile_id']['field'] = 'commerce_customer_billing_profile_id';
-  /* Relationship: Commerce Order: Payment Transaction */
-  $handler->display->display_options['relationships']['payment_transaction']['id'] = 'payment_transaction';
-  $handler->display->display_options['relationships']['payment_transaction']['table'] = 'commerce_order';
-  $handler->display->display_options['relationships']['payment_transaction']['field'] = 'payment_transaction';
   /* Field: Commerce Order: Order number */
   $handler->display->display_options['fields']['order_number']['id'] = 'order_number';
   $handler->display->display_options['fields']['order_number']['table'] = 'commerce_order';
   $handler->display->display_options['fields']['order_number']['field'] = 'order_number';
+  $handler->display->display_options['fields']['order_number']['link_to_order'] = 'admin';
   /* Field: Commerce Customer profile: Address */
   $handler->display->display_options['fields']['commerce_customer_address']['id'] = 'commerce_customer_address';
   $handler->display->display_options['fields']['commerce_customer_address']['table'] = 'field_data_commerce_customer_address';
   $handler->display->display_options['fields']['commerce_customer_address']['field'] = 'commerce_customer_address';
   $handler->display->display_options['fields']['commerce_customer_address']['relationship'] = 'commerce_customer_billing_profile_id';
   $handler->display->display_options['fields']['commerce_customer_address']['click_sort_column'] = 'country';
+  $handler->display->display_options['fields']['commerce_customer_address']['type'] = 'addressfield_linear';
   $handler->display->display_options['fields']['commerce_customer_address']['settings'] = array(
     'use_widget_handlers' => 1,
     'format_handlers' => array(
@@ -105,12 +103,6 @@ function fond_admin_views_default_views() {
   $handler->display->display_options['fields']['balance']['table'] = 'commerce_order';
   $handler->display->display_options['fields']['balance']['field'] = 'balance';
   $handler->display->display_options['fields']['balance']['display_format'] = 'raw';
-  /* Field: Commerce Payment Transaction: Payment method */
-  $handler->display->display_options['fields']['payment_method']['id'] = 'payment_method';
-  $handler->display->display_options['fields']['payment_method']['table'] = 'commerce_payment_transaction';
-  $handler->display->display_options['fields']['payment_method']['field'] = 'payment_method';
-  $handler->display->display_options['fields']['payment_method']['relationship'] = 'payment_transaction';
-  $handler->display->display_options['fields']['payment_method']['title'] = 'short_title';
   /* Filter criterion: Commerce Order: Order type */
   $handler->display->display_options['filters']['type']['id'] = 'type';
   $handler->display->display_options['filters']['type']['table'] = 'commerce_order';
@@ -125,6 +117,7 @@ function fond_admin_views_default_views() {
   $handler->display->display_options['filters']['state']['value'] = array(
     'pending' => 'pending',
     'completed' => 'completed',
+    'invoiced' => 'invoiced',
   );
   /* Filter criterion: Commerce Order: Created date */
   $handler->display->display_options['filters']['created']['id'] = 'created';
@@ -148,7 +141,7 @@ function fond_admin_views_default_views() {
   $handler = $view->new_display('page', 'Page', 'page_1');
   $handler->display->display_options['path'] = 'admin/commerce/orders/export';
   $handler->display->display_options['menu']['type'] = 'tab';
-  $handler->display->display_options['menu']['title'] = 'Export';
+  $handler->display->display_options['menu']['title'] = 'Export orders';
   $handler->display->display_options['menu']['weight'] = '0';
   $handler->display->display_options['menu']['name'] = 'management';
   $handler->display->display_options['menu']['context'] = 0;
@@ -163,10 +156,48 @@ function fond_admin_views_default_views() {
   $handler->display->display_options['style_options']['parent_sort'] = 0;
   $handler->display->display_options['style_options']['separator'] = ';';
   $handler->display->display_options['style_options']['quote'] = 1;
-  $handler->display->display_options['style_options']['trim'] = 0;
-  $handler->display->display_options['style_options']['replace_newlines'] = 0;
+  $handler->display->display_options['style_options']['trim'] = 1;
+  $handler->display->display_options['style_options']['replace_newlines'] = 1;
   $handler->display->display_options['style_options']['header'] = 1;
   $handler->display->display_options['style_options']['keep_html'] = 0;
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Commerce Order: Order number */
+  $handler->display->display_options['fields']['order_number']['id'] = 'order_number';
+  $handler->display->display_options['fields']['order_number']['table'] = 'commerce_order';
+  $handler->display->display_options['fields']['order_number']['field'] = 'order_number';
+  /* Field: Commerce Customer profile: Address */
+  $handler->display->display_options['fields']['commerce_customer_address']['id'] = 'commerce_customer_address';
+  $handler->display->display_options['fields']['commerce_customer_address']['table'] = 'field_data_commerce_customer_address';
+  $handler->display->display_options['fields']['commerce_customer_address']['field'] = 'commerce_customer_address';
+  $handler->display->display_options['fields']['commerce_customer_address']['relationship'] = 'commerce_customer_billing_profile_id';
+  $handler->display->display_options['fields']['commerce_customer_address']['click_sort_column'] = 'country';
+  $handler->display->display_options['fields']['commerce_customer_address']['type'] = 'addressfield_linear';
+  $handler->display->display_options['fields']['commerce_customer_address']['settings'] = array(
+    'use_widget_handlers' => 1,
+    'format_handlers' => array(
+      'address' => 'address',
+    ),
+  );
+  /* Field: Commerce Customer profile: CPR-nummer */
+  $handler->display->display_options['fields']['field_cpr_nummer']['id'] = 'field_cpr_nummer';
+  $handler->display->display_options['fields']['field_cpr_nummer']['table'] = 'field_data_field_cpr_nummer';
+  $handler->display->display_options['fields']['field_cpr_nummer']['field'] = 'field_cpr_nummer';
+  $handler->display->display_options['fields']['field_cpr_nummer']['relationship'] = 'commerce_customer_billing_profile_id';
+  $handler->display->display_options['fields']['field_cpr_nummer']['label'] = 'SSN Number';
+  /* Field: Commerce Order: Order total */
+  $handler->display->display_options['fields']['commerce_order_total']['id'] = 'commerce_order_total';
+  $handler->display->display_options['fields']['commerce_order_total']['table'] = 'field_data_commerce_order_total';
+  $handler->display->display_options['fields']['commerce_order_total']['field'] = 'commerce_order_total';
+  $handler->display->display_options['fields']['commerce_order_total']['click_sort_column'] = 'amount';
+  $handler->display->display_options['fields']['commerce_order_total']['type'] = 'commerce_price_raw_amount';
+  $handler->display->display_options['fields']['commerce_order_total']['settings'] = array(
+    'calculation' => FALSE,
+  );
+  /* Field: Commerce Order: Order Balance */
+  $handler->display->display_options['fields']['balance']['id'] = 'balance';
+  $handler->display->display_options['fields']['balance']['table'] = 'commerce_order';
+  $handler->display->display_options['fields']['balance']['field'] = 'balance';
+  $handler->display->display_options['fields']['balance']['display_format'] = 'raw';
   $handler->display->display_options['path'] = 'admin/commerce/orders/export.csv';
   $handler->display->display_options['displays'] = array(
     'page_1' => 'page_1',
@@ -190,13 +221,11 @@ function fond_admin_views_default_views() {
     t('næste ›'),
     t('sidste »'),
     t('Customer profile referenced by commerce_customer_billing'),
-    t('Transaction'),
     t('Order number'),
     t('Address'),
     t('SSN Number'),
     t('Order total'),
     t('Order Balance'),
-    t('Payment method'),
     t('Created date between'),
     t('In what date range should the list be extracted (CCYY-MM-DD HH:MM:SS)?'),
     t('Page'),
