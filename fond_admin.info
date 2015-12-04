@@ -5,6 +5,7 @@ package = VIH Fond
 version = 7.x-1.0
 project = fond_admin
 dependencies[] = commerce_order
+dependencies[] = fond_commerce
 dependencies[] = views
 dependencies[] = views_data_export
 features[ctools][] = views:views_default:3.0
