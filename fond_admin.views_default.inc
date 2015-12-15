@@ -176,11 +176,12 @@ function fond_admin_views_default_views() {
   $handler->display->display_options['filters']['created']['expose']['description'] = 'In what date range should the list be extracted (CCYY-MM-DD HH:MM:SS)?';
   $handler->display->display_options['filters']['created']['expose']['operator'] = 'created_op';
   $handler->display->display_options['filters']['created']['expose']['identifier'] = 'created';
+  $handler->display->display_options['filters']['created']['expose']['remember'] = TRUE;
   $handler->display->display_options['filters']['created']['expose']['remember_roles'] = array(
     2 => '2',
+    3 => '3',
+    4 => '4',
     1 => 0,
-    3 => 0,
-    4 => 0,
   );
 
   /* Display: Page */
