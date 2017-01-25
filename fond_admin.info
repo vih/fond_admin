@@ -4,6 +4,7 @@ core = 7.x
 package = VIH Fond
 version = 7.x-1.0
 project = fond_admin
+dependencies[] = adminrole
 dependencies[] = commerce_order
 dependencies[] = fond_commerce
 dependencies[] = views
